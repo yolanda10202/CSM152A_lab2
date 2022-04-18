@@ -53,12 +53,12 @@ module bi_to_float(bi, ft);
 		// set exponent
 		if(countZeroes >= 8)
 		begin
-			ft[4:6] <= 0;
+			ft[6:4] <= 0;
 		end
 		
 		else 
 		begin
-			ft[4:6] <= 8-countZeroes;
+			ft[6:4] <= 8-countZeroes;
 		end
 		
 		// assign significands
