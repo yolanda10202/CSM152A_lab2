@@ -23,25 +23,31 @@ module bi_to_float(bi, ft);
 	output reg [7:0] ft;
 	reg [4:0] countZeroes;
 	reg [11:0] biVal;
-	
-	initial
-	begin
-		biVal = bi;
-	end
+
 	
 	always @(*) begin
+		biVal = bi;
+		countZeroes = 0;
 		// figure out sign
 		if(bi[11] == 1)
 		begin
 			ft[7] = 1;
-			biVal = ~biVal + 1;
+			if(bi != 12'b100000000000)
+			begin
+				biVal = ~bi + 1;
+			end
+			
+			else
+			begin
+				biVal = ~bi;
+			end
+			
 		end
 		
 		else
 		begin
 			ft[7] = 0;
 		end
-		
 		
 		// find out # leading zeros, determine exponent
 		while(biVal[11] == 0)
@@ -53,21 +59,21 @@ module bi_to_float(bi, ft);
 		// set exponent
 		if(countZeroes >= 8)
 		begin
-			ft[6:4] <= 0;
+			ft[6:4] = 0;
 		end
 		
 		else 
 		begin
-			ft[6:4] <= 8-countZeroes;
+			ft[6:4] = 8-countZeroes;
 		end
 		
 		// assign significands
-		ft[3:0] <= biVal[11:8];
+		ft[3:0] = biVal[11:8];
 		
 		// rounding
 		if(biVal[7] == 1 && ft[3:0] != 4'b1111)
 		begin
-			ft <= ft + 1;
+			ft = ft + 1;
 		end
 		
 		else if (biVal[7] == 1 && ft[3:0] == 4'b1111)
